@@ -1,0 +1,8 @@
+{
+  "name": "emh-photography-stripe",
+  "version": "1.0.0",
+  "description": "EMH Photography – Stripe checkout integration",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
