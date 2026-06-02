@@ -61,6 +61,22 @@ exports.handler = async function (event) {
       success_url: `${baseUrl}/?payment=success`,
       cancel_url: `${baseUrl}/?payment=cancelled`,
       locale: isEN ? 'en' : 'da',
+      
+      consent_collection: {
+        terms_of_service: 'required',
+      },
+
+      custom_text: {
+        terms_of_service_acceptance: {
+          message: isEN
+            ? 'I have read and accept the <a href="https://emhphotography.netlify.app/handelsbetingelser">terms and conditions</a>. I understand all products are custom-made and cannot be returned.'
+            : 'Jeg har læst og accepterer <a href="https://emhphotography.netlify.app/handelsbetingelser">handelsbetingelserne</a>. Jeg er bekendt med, at alle produkter er specialfremstillede og ikke kan returneres.',
+        },
+      },
+
+      shipping_address_collection: {
+
+
       shipping_address_collection: {
         allowed_countries: ['DK', 'SE', 'NO', 'DE', 'NL', 'FR', 'GB', 'US', 'CH', 'AT'],
       },
