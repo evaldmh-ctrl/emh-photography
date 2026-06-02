@@ -1,7 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async function (event) {
-  // Only allow POST
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -21,13 +20,11 @@ exports.handler = async function (event) {
 
   const isEN = lang === 'en';
 
-  // Frame labels
   const frameLabels = {
     da: { oak: 'Egetræ', white: 'Hvid', black: 'Sort' },
     en: { oak: 'Oak', white: 'White', black: 'Black' },
   };
 
-  // Build Stripe line_items from cart
   const line_items = items.map((item) => {
     const frameLabel = (frameLabels[lang] || frameLabels.da)[item.frame] || item.frame;
     const sizeLabel = item.size.replace('x', '×') + ' cm';
@@ -38,19 +35,18 @@ exports.handler = async function (event) {
     return {
       price_data: {
         currency: isEN ? 'eur' : 'dkk',
-        unit_amount: item.price * 100, // Stripe uses øre/cents
+        unit_amount: item.price * 100,
         product_data: {
           name: item.title,
           description: description,
-          images: [], // Add product image URLs here if hosted publicly
+          images: [],
         },
       },
       quantity: 1,
     };
   });
 
-  // Success/cancel URLs — Netlify will serve your HTML as the root
-  const origin = event.headers.origin || event.headers.referer || 'https://YOUR-SITE.netlify.app';
+  const origin = event.headers.origin || event.headers.referer || 'https://emhphotography.netlify.app';
   const baseUrl = origin.endsWith('/') ? origin.slice(0, -1) : origin;
 
   try {
@@ -61,11 +57,9 @@ exports.handler = async function (event) {
       success_url: `${baseUrl}/?payment=success`,
       cancel_url: `${baseUrl}/?payment=cancelled`,
       locale: isEN ? 'en' : 'da',
-      
       consent_collection: {
         terms_of_service: 'required',
       },
-
       custom_text: {
         terms_of_service_acceptance: {
           message: isEN
@@ -73,10 +67,6 @@ exports.handler = async function (event) {
             : 'Jeg har læst og accepterer <a href="https://emhphotography.netlify.app/handelsbetingelser">handelsbetingelserne</a>. Jeg er bekendt med, at alle produkter er specialfremstillede og ikke kan returneres.',
         },
       },
-
-      shipping_address_collection: {
-
-
       shipping_address_collection: {
         allowed_countries: ['DK', 'SE', 'NO', 'DE', 'NL', 'FR', 'GB', 'US', 'CH', 'AT'],
       },
